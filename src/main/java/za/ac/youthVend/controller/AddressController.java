@@ -1,0 +1,97 @@
+package za.ac.youthVend.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import za.ac.youthVend.domain.Address;
+import za.ac.youthVend.domain.User;
+import za.ac.youthVend.domain.enums.AddressType;
+import za.ac.youthVend.service.AddressService;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+@RequestMapping("/api/addresses")
+@RequiredArgsConstructor
+@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
+public class AddressController {
+
+    private final AddressService addressService;
+
+    @GetMapping
+    public ResponseEntity<List<Address>> getAllAddresses() {
+        List<Address> addresses = addressService.findAll();
+        return ResponseEntity.ok(addresses);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Address> getAddressById(@PathVariable Integer id) {
+        Optional<Address> addressOpt = addressService.findById(id);
+        return addressOpt.map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<Address>> getAddressesByUserId(@PathVariable Integer userId) {
+        User user = new User();
+        user.setUserId(userId);
+        List<Address> addresses = addressService.findByUser(user);
+        return ResponseEntity.ok(addresses);
+    }
+    @GetMapping("/user/{userId}/type/{type}")
+    public ResponseEntity<List<Address>> getAddressesByType(
+            @PathVariable Integer userId,
+            @PathVariable String type) {
+        User user = new User();
+        user.setUserId(userId);
+        AddressType addressType;
+        try {
+            addressType = AddressType.valueOf(type.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        List<Address> addresses = addressService.findByUser(user).stream()
+                .filter(address -> address.getType() == addressType) // <-- fixed here
+                .toList();
+
+        return ResponseEntity.ok(addresses);
+    }
+
+
+    @PostMapping
+    public ResponseEntity<Address> createAddress(@RequestBody Address address) {
+        Address created = addressService.save(address);
+        return ResponseEntity.status(HttpStatus.CREATED).body(created);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Address> updateAddress(@PathVariable Integer id, @RequestBody Address address) {
+        address.setAddressId(id);
+        Address updated = addressService.update(address);
+        return ResponseEntity.ok(updated);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteAddress(@PathVariable Integer id) {
+        if (!addressService.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        addressService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/set-default")
+    public ResponseEntity<Address> setDefaultAddress(@PathVariable Integer id) {
+        Optional<Address> addressOpt = addressService.findById(id);
+        if (addressOpt.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        Address address = addressOpt.get();
+        // In a full implementation, you would unset other default addresses
+        Address updated = addressService.update(address);
+        return ResponseEntity.ok(updated);
+    }
+}
