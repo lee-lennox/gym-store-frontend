@@ -15,6 +15,4 @@ public interface AddressRepository extends JpaRepository<Address, Integer> {
 
     List<Address> findByType(AddressType type);
 
-    List<Address> findByUserAndType(User user, AddressType type);
-
 }///end of class

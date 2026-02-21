@@ -30,6 +30,10 @@ public class Order {
     @Column(nullable = false)
     private BigDecimal totalAmount;
 
+    @ManyToOne
+    @JoinColumn(name = "shipping_address_id")
+    private Address shippingAddress;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
@@ -39,5 +43,6 @@ public class Order {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     @Builder.Default
+    @com.fasterxml.jackson.annotation.JsonIgnore
     private List<OrderItem> items = new ArrayList<>();
 }

@@ -1,7 +1,6 @@
 package za.ac.youthVend.factory;
 
 import za.ac.youthVend.domain.Address;
-import za.ac.youthVend.domain.User;
 import za.ac.youthVend.domain.enums.AddressType;
 
 public class AddressFactory {
@@ -16,8 +15,7 @@ public class AddressFactory {
        FACTORY METHODS
        ========================= */
 
-    public static Address createAddress(User user,
-                                        String line1,
+    public static Address createAddress(String line1,
                                         String line2,
                                         String city,
                                         String state,
@@ -25,14 +23,12 @@ public class AddressFactory {
                                         String country,
                                         AddressType type) {
 
-        validateUser(user);
         validateLine1(line1);
         validateCity(city);
         validateCountry(country);
         validateType(type);
 
         return Address.builder()
-                .user(user)
                 .line1(line1)
                 .line2(line2)
                 .city(city)
@@ -43,13 +39,11 @@ public class AddressFactory {
                 .build();
     }
 
-    public static Address createBillingAddress(User user,
-                                               String line1,
+    public static Address createBillingAddress(String line1,
                                                String city,
                                                String country) {
 
         return createAddress(
-                user,
                 line1,
                 null,
                 city,
@@ -60,13 +54,11 @@ public class AddressFactory {
         );
     }
 
-    public static Address createShippingAddress(User user,
-                                                String line1,
+    public static Address createShippingAddress(String line1,
                                                 String city,
                                                 String country) {
 
         return createAddress(
-                user,
                 line1,
                 null,
                 city,
@@ -80,12 +72,6 @@ public class AddressFactory {
     /* =========================
        VALIDATION METHODS
        ========================= */
-
-    private static void validateUser(User user) {
-        if (user == null) {
-            throw new IllegalArgumentException("User cannot be null for an address");
-        }
-    }
 
     private static void validateLine1(String line1) {
         if (line1 == null || line1.trim().isEmpty()) {

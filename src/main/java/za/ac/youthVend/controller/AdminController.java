@@ -2,6 +2,7 @@ package za.ac.youthVend.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import za.ac.youthVend.domain.User;
 import za.ac.youthVend.domain.enums.UserRole;
@@ -13,6 +14,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/admin/users")
 @CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
+@PreAuthorize("hasAuthority('ADMIN')")
 public class AdminController {
 
     private final UserService userService;

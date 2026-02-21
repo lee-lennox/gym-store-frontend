@@ -8,6 +8,7 @@ import za.ac.youthVend.domain.Address;
 import za.ac.youthVend.domain.User;
 import za.ac.youthVend.domain.enums.AddressType;
 import za.ac.youthVend.service.AddressService;
+import za.ac.youthVend.service.UserService;
 
 import java.util.List;
 import java.util.Optional;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class AddressController {
 
     private final AddressService addressService;
+    private final UserService userService;
 
     @GetMapping
     public ResponseEntity<List<Address>> getAllAddresses() {
@@ -35,17 +37,15 @@ public class AddressController {
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Address>> getAddressesByUserId(@PathVariable Integer userId) {
-        User user = new User();
-        user.setUserId(userId);
-        List<Address> addresses = addressService.findByUser(user);
+        Optional<User> userOpt = userService.getUserById(userId);
+        if (userOpt.isEmpty()) return ResponseEntity.notFound().build();
+        
+        List<Address> addresses = addressService.findByUser(userOpt.get());
         return ResponseEntity.ok(addresses);
     }
-    @GetMapping("/user/{userId}/type/{type}")
-    public ResponseEntity<List<Address>> getAddressesByType(
-            @PathVariable Integer userId,
-            @PathVariable String type) {
-        User user = new User();
-        user.setUserId(userId);
+
+    @GetMapping("/type/{type}")
+    public ResponseEntity<List<Address>> getAddressesByType(@PathVariable String type) {
         AddressType addressType;
         try {
             addressType = AddressType.valueOf(type.toUpperCase());
@@ -53,10 +53,7 @@ public class AddressController {
             return ResponseEntity.badRequest().build();
         }
 
-        List<Address> addresses = addressService.findByUser(user).stream()
-                .filter(address -> address.getType() == addressType) // <-- fixed here
-                .toList();
-
+        List<Address> addresses = addressService.findByType(addressType);
         return ResponseEntity.ok(addresses);
     }
 

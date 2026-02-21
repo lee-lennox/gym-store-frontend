@@ -19,6 +19,7 @@ public class OrderDTO {
     private Integer orderId;
     private Integer userId;
     private BigDecimal totalAmount;
+    private AddressDTO shippingAddress;
     private OrderStatus status;
     private LocalDateTime createdAt;
     private List<OrderItemDTO> items;

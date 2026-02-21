@@ -1,5 +1,6 @@
 package za.ac.youthVend.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,5 +28,6 @@ public class Category {
 
     @OneToMany(mappedBy = "category")
     @Builder.Default
+    @JsonIgnore
     private List<Product> products = new ArrayList<>();
 }

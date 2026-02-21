@@ -50,10 +50,10 @@ public class User {
 
     private String phone;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    @Builder.Default
-    @JsonIgnore
-    private List<Address> addresses = new ArrayList<>();
+    // Password reset fields
+    private String resetToken;
+    
+    private LocalDateTime resetTokenExpiry;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @Builder.Default

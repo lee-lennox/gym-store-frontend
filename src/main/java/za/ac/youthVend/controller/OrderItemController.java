@@ -4,8 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import za.ac.youthVend.domain.Order;
 import za.ac.youthVend.domain.OrderItem;
+import za.ac.youthVend.domain.Product;
+import za.ac.youthVend.dto.CreateOrderItemRequest;
 import za.ac.youthVend.service.OrderItemService;
+import za.ac.youthVend.service.OrderService;
+import za.ac.youthVend.service.ProductService;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +22,8 @@ import java.util.Optional;
 public class OrderItemController {
 
     private final OrderItemService orderItemService;
+    private final OrderService orderService;
+    private final ProductService productService;
 
     /**
      * Get all order items
@@ -52,7 +59,29 @@ public class OrderItemController {
      * Create new order item
      */
     @PostMapping
-    public ResponseEntity<OrderItem> createOrderItem(@RequestBody OrderItem orderItem) {
+    public ResponseEntity<OrderItem> createOrderItem(@RequestBody CreateOrderItemRequest request) {
+        // Fetch the order and product by their IDs
+        Order order = orderService.findById(request.getOrderId())
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        Product product = productService.findById(request.getProductId())
+                .orElseThrow(() -> new RuntimeException("Product not found"));
+        
+        // Check if enough stock is available
+        if (product.getStock() < request.getQuantity()) {
+            throw new RuntimeException("Insufficient stock. Available: " + product.getStock());
+        }
+        
+        // Decrease product stock
+        product.setStock(product.getStock() - request.getQuantity());
+        productService.update(product);
+        
+        // Create the OrderItem
+        OrderItem orderItem = new OrderItem();
+        orderItem.setOrder(order);
+        orderItem.setProduct(product);
+        orderItem.setQuantity(request.getQuantity());
+        orderItem.setUnitPrice(request.getPrice());
+        
         OrderItem created = orderItemService.save(orderItem);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }

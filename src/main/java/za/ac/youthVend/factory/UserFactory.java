@@ -54,7 +54,6 @@ public class UserFactory {
 
                 .phone(phone)
                 .enabled(true)
-                .addresses(Collections.emptyList())
                 .orders(Collections.emptyList())
                 .build();
     }

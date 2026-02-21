@@ -6,8 +6,6 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -41,9 +39,9 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
-    @Builder.Default
-    private List<ProductImage> images = new ArrayList<>();
+    private String imagePath;
+
+    private String imageFileName;
 
     @CreationTimestamp
     private LocalDateTime createdAt;

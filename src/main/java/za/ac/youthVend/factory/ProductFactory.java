@@ -24,7 +24,9 @@ public class ProductFactory {
                                         BigDecimal price,
                                         String sku,
                                         Integer stock,
-                                        Category category) {
+                                        Category category,
+                                        String imageFileName,
+                                        String imagePath) {
 
         validateName(name);
         validateDescription(description);
@@ -39,7 +41,18 @@ public class ProductFactory {
                 .sku(sku.trim())
                 .stock(stock)
                 .category(category)
+                .imageFileName(imageFileName)
+                .imagePath(imagePath)
                 .build();
+    }
+
+    public static Product createProduct(String name,
+                                        String description,
+                                        BigDecimal price,
+                                        String sku,
+                                        Integer stock,
+                                        Category category) {
+        return createProduct(name, description, price, sku, stock, category, null, null);
     }
 
     /* =========================

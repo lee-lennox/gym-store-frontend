@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import za.ac.youthVend.domain.Address;
 import za.ac.youthVend.domain.Order;
 import za.ac.youthVend.domain.enums.OrderStatus;
+import za.ac.youthVend.service.AddressService;
 import za.ac.youthVend.service.OrderService;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class OrderController {
 
     private final OrderService orderService;
+    private final AddressService addressService;
 
     @GetMapping
     public ResponseEntity<List<Order>> getAllOrders() {
@@ -55,6 +58,12 @@ public class OrderController {
 
     @PostMapping
     public ResponseEntity<Order> createOrder(@RequestBody Order order) {
+        // Fetch the address from database if it has an ID to avoid detached entity issue
+        if (order.getShippingAddress() != null && order.getShippingAddress().getAddressId() != null) {
+            Address address = addressService.findById(order.getShippingAddress().getAddressId())
+                    .orElseThrow(() -> new RuntimeException("Address not found"));
+            order.setShippingAddress(address);
+        }
         Order created = orderService.save(order);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }

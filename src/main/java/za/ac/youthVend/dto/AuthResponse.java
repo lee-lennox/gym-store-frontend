@@ -4,19 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
+import za.ac.youthVend.domain.enums.UserRole;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDTO {
-
-    private Integer userId;
-    private String username;
+public class AuthResponse {
+    private String token;
     private String email;
-    private String role; // from UserRole
-    private LocalDateTime createdAt;
-    private String phone;
+    private String name;
+    private UserRole role;
+    private Integer userId;
+    private String message;
 }

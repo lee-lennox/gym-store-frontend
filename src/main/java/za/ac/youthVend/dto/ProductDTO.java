@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -22,7 +21,8 @@ public class ProductDTO {
     private String sku;
     private Integer stock;
     private Integer categoryId;
-    private List<ProductImageDTO> images;
+    private String imagePath;
+    private String imageFileName;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

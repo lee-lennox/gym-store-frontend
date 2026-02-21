@@ -6,6 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import za.ac.youthVend.domain.Order;
 import za.ac.youthVend.domain.PaymentTransaction;
+import za.ac.youthVend.dto.CreatePaymentRequest;
+import za.ac.youthVend.service.OrderService;
 import za.ac.youthVend.service.PaymentTransactionService;
 
 import java.util.List;
@@ -19,6 +21,7 @@ import java.util.Optional;
 public class PaymentController {
 
     private final PaymentTransactionService paymentService;
+    private final OrderService orderService;
 
     /**
      * Get all payment transactions
@@ -43,7 +46,18 @@ public class PaymentController {
      * Create new payment transaction
      */
     @PostMapping
-    public ResponseEntity<PaymentTransaction> createPayment(@RequestBody PaymentTransaction payment) {
+    public ResponseEntity<PaymentTransaction> createPayment(@RequestBody CreatePaymentRequest request) {
+        // Fetch the order by ID
+        Order order = orderService.findById(request.getOrderId())
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+        
+        // Create the PaymentTransaction
+        PaymentTransaction payment = new PaymentTransaction();
+        payment.setOrder(order);
+        payment.setAmount(request.getAmount());
+        payment.setProvider(request.getProvider());
+        payment.setStatus(request.getStatus());
+        
         PaymentTransaction created = paymentService.save(payment);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }

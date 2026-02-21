@@ -1,5 +1,6 @@
 package za.ac.youthVend.factory;
 
+import za.ac.youthVend.domain.Address;
 import za.ac.youthVend.domain.Order;
 import za.ac.youthVend.domain.OrderItem;
 import za.ac.youthVend.domain.User;
@@ -32,6 +33,26 @@ public class OrderFactory {
                 .user(user)
                 .items(items)
                 .totalAmount(totalAmount)
+                .status(status)
+                .build();
+    }
+
+    public static Order createOrder(User user,
+                                    List<OrderItem> items,
+                                    BigDecimal totalAmount,
+                                    Address shippingAddress,
+                                    OrderStatus status) {
+
+        validateUser(user);
+        validateItems(items);
+        validateTotalAmount(totalAmount);
+        validateStatus(status);
+
+        return Order.builder()
+                .user(user)
+                .items(items)
+                .totalAmount(totalAmount)
+                .shippingAddress(shippingAddress)
                 .status(status)
                 .build();
     }

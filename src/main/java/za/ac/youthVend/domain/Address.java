@@ -1,5 +1,6 @@
 package za.ac.youthVend.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import za.ac.youthVend.domain.enums.AddressType;
@@ -18,7 +19,8 @@ public class Address {
     private Integer addressId;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @Column(nullable = false)
