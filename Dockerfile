@@ -5,7 +5,8 @@ FROM eclipse-temurin:21-jdk-jammy
 ENV DATABASE_URL=jdbc:postgresql://localhost:5432/gymstore
 ENV DATABASE_USERNAME=postgres
 ENV DATABASE_PASSWORD=Postgres
-ENV SPRING_WEB_CORS_ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000
+ENV SPRING_WEB_CORS_ALLOWED_ORIGINS=http://localhost:5173,http://localhost:3000,https://lennoxgymstore1.netlify.app
+ENV FRONTEND_URL=http://localhost:5173,http://localhost:3000,https://lennoxgymstore1.netlify.app
 
 # SMTP placeholders (override at runtime with secure secrets)
 ENV SPRING_MAIL_HOST=smtp.example.com

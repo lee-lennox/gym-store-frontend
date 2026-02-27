@@ -6,6 +6,11 @@ import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 @Table(name = "products")
@@ -47,4 +52,14 @@ public class Product {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    @ElementCollection
+    @CollectionTable(name = "product_colors", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "color")
+    private List<String> colors;
+
+    @ElementCollection
+    @CollectionTable(name = "product_weight_options", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "weight_kg")
+    private List<Integer> weightOptions;
 }

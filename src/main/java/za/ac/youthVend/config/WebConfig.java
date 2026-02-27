@@ -17,10 +17,13 @@ public class WebConfig implements WebMvcConfigurer {
     
     @Value("${FRONTEND_URL}")
     private String frontendUrl;
+
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        // the property is a comma‑separated list; split and trim to support multiple origins
+        String[] origins = frontendUrl.split("\s*,\s*");
         registry.addMapping("/api/**")
-                .allowedOrigins(frontendUrl)
+                .allowedOrigins(origins)
                 .allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

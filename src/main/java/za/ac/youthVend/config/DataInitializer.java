@@ -14,6 +14,8 @@ import za.ac.youthVend.repository.UserRepository;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import org.springframework.transaction.annotation.Transactional;
 
 @Component
 @RequiredArgsConstructor
@@ -38,29 +40,21 @@ public class DataInitializer implements CommandLineRunner {
         // Create products
         createProduct("Premium Dumbbell Set", "High-quality adjustable dumbbells",
                 new BigDecimal("5399.99"), "DB-001", 50, weights,
-                "/products/images/Dumbells.png", "Dumbells.png");
+                "/api/products/images/Dumbells.png", "Dumbells.png");
 
         createProduct("Professional Treadmill", "Commercial-grade treadmill with advanced features",
                 new BigDecimal("26999.99"), "TM-001", 20, cardio,
-                "/products/images/trendmill.png", "trendmill.png");
+                "/api/products/images/trendmill.png", "trendmill.png");
 
         createProduct("Exercise Bike Pro", "Professional exercise bike for intense workouts",
                 new BigDecimal("16199.99"), "EB-001", 30, cardio,
-                "/products/images/probike.png", "probike.png");
+                "/api/products/images/probike.png", "probike.png");
 
         createProduct("Premium Yoga Mat", "Non-slip premium yoga mat",
                 new BigDecimal("899.99"), "YM-001", 100, accessories,
-                "/products/images/yogamat.png", "yogamat.png");
+                "/api/products/images/yogamat.png", "yogamat.png");
 
-        // Add "No Premium Dumbbell" using the uploaded image file
-        createProduct("No Premium Dumbbell", "Adjustable dumbbell set (no premium)",
-                new BigDecimal("5499.99"), "DB-002", 25, weights,
-                "/products/images/Dumbells.png", "Dumbells.png");
-
-        // Add the attached yoga mat image as a seeded product
-        createProduct("Blue Yoga Mat", "Comfortable non-slip yoga mat - blue design",
-                new BigDecimal("799.99"), "YM-002", 75, accessories,
-                "/products/images/yogamat.png", "yogamat.png");
+        // Additional seeded products removed as requested
     }
 
     private void createDefaultAdmin() {
@@ -106,23 +100,46 @@ public class DataInitializer implements CommandLineRunner {
                 "placeholder.jpg");
     }
 
-    private void createProduct(String name, String description, BigDecimal price,
+        @Transactional
+        private void createProduct(String name, String description, BigDecimal price,
                                String sku, int stock, Category category,
                                String imagePath, String imageFileName) {
+                productRepository.findBySku(sku).ifPresentOrElse(existing -> {
+                        boolean changed = false;
+                        if (existing.getImagePath() == null || !existing.getImagePath().equals(imagePath)) {
+                                existing.setImagePath(imagePath);
+                                changed = true;
+                        }
+                        if (existing.getImageFileName() == null || !existing.getImageFileName().equals(imageFileName)) {
+                                existing.setImageFileName(imageFileName);
+                                changed = true;
+                        }
+                        // For dumbbell SKUs, set options (replace or add) without reading lazy collections
+                        if (sku != null && sku.startsWith("DB")) {
+                                existing.setColors(List.of("Black", "Chrome"));
+                                existing.setWeightOptions(List.of(2,4,6,8,10));
+                                changed = true;
+                        }
+                        if (changed) productRepository.save(existing);
+                }, () -> {
+                        Product product = Product.builder()
+                                        .name(name)
+                                        .description(description)
+                                        .price(price)
+                                        .sku(sku)
+                                        .stock(stock)
+                                        .category(category)
+                                        .imagePath(imagePath)
+                                        .imageFileName(imageFileName)
+                                        .build();
 
-        if (productRepository.findBySku(sku).isPresent()) return;
+                        // Seed options for dumbbells
+                        if (sku != null && sku.startsWith("DB")) {
+                                product.setColors(List.of("Black", "Chrome"));
+                                product.setWeightOptions(List.of(2,4,6,8,10));
+                        }
 
-        Product product = Product.builder()
-                .name(name)
-                .description(description)
-                .price(price)
-                .sku(sku)
-                .stock(stock)
-                .category(category)
-                .imagePath(imagePath)
-                .imageFileName(imageFileName)
-                .build();
-
-        productRepository.save(product);
+                        productRepository.save(product);
+                });
     }
 }
