@@ -78,4 +78,10 @@ public class OrderService implements IOrderService {
     public List<Order> findByStatus(OrderStatus status) {
         return orderRepository.findByStatus(status);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Order> findByUserEmail(String email) {
+        return orderRepository.findByUserEmail(email);
+    }
 }

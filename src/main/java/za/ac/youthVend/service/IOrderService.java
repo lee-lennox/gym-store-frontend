@@ -11,4 +11,6 @@ public interface IOrderService extends IService<Order, Integer> {
     List<Order> findByUser(User user);
 
     List<Order> findByStatus(OrderStatus status);
+
+    List<Order> findByUserEmail(String email);
 }
