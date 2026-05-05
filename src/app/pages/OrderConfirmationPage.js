@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { CheckCircle, Package, Mail, Home } from 'lucide-react';
+import { API_ORIGIN } from '../../services/api';
 import { ImageWithFallback } from '../components/imagefullbackk/ImageWithFallback';
 
 export function OrderConfirmationPage() {
@@ -67,7 +68,7 @@ export function OrderConfirmationPage() {
                     <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
                       {item.product.imagePath && (
                         <ImageWithFallback
-                          src={`https://gymstore-5ni9.onrender.com${item.product.imagePath}`}
+                          src={`${API_ORIGIN}${item.product.imagePath}`}
                           alt={item.product.name}
                           className="w-full h-full object-cover"
                         />

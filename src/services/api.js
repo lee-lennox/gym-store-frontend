@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Local development and hosted fallback APIs
-const DEV_LOCAL_BASE ='https://gymstore-5ni9.onrender.com/api';
+const DEV_LOCAL_BASE = 'http://localhost:8080/api';
 const FALLBACK_BASE = 'https://gymstore-5ni9.onrender.com/api';
 
 // Normalize API base URL from env (defensive: handles missing protocol, ":8080" values, and adds /api when appropriate)

@@ -46,23 +46,23 @@ export function AdminDashboardPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-600" />
+      <div className="flex items-center justify-center min-h-[400px] bg-white dark:bg-zinc-950">
+        <Loader2 className="h-8 w-8 animate-spin text-zinc-900 dark:text-white" />
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="container mx-auto px-4 py-8">
-        <div className="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
+      <div className="container mx-auto px-4 py-8 min-h-screen bg-white dark:bg-zinc-950">
+        <div className="bg-red-50 dark:bg-red-900/10 border border-red-200 dark:border-red-900/30 rounded-lg p-6 text-center">
           <p className="text-red-600">Error: {error}</p>
-          <p className="text-sm text-gray-600 mt-2">
-            Make sure the backend API is running at {import.meta.env.VITE_API_URL || 'https://gymstore-5ni9.onrender.com/api'}
+          <p className="text-sm text-zinc-600 dark:text-zinc-400 mt-2">
+            Make sure the backend API is running at http://localhost:8080/api (or your configured API URL)
           </p>
           <button
             onClick={loadProducts}
-            className="mt-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="mt-4 px-4 py-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 rounded-lg"
           >
             Retry
           </button>
@@ -96,40 +96,40 @@ export function AdminDashboardPage() {
 
         <Link
           to="/admin/categories"
-          className="bg-white border rounded-lg p-6 hover:shadow-lg transition-shadow"
+          className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6 hover:shadow-lg transition-shadow"
         >
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <Tag className="h-6 w-6 text-green-600" />
+            <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center">
+              <Tag className="h-6 w-6 text-zinc-900 dark:text-white" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">Categories</h3>
-              <p className="text-sm text-gray-600">Manage catalogue</p>
+              <h3 className="font-semibold text-lg text-zinc-900 dark:text-white">Categories</h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">Manage catalogue</p>
             </div>
           </div>
         </Link>
 
         <Link
           to="/admin/users"
-          className="bg-white border rounded-lg p-6 hover:shadow-lg transition-shadow"
+          className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg p-6 hover:shadow-lg transition-shadow"
         >
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <Users className="h-6 w-6 text-purple-600" />
+            <div className="w-12 h-12 bg-zinc-100 dark:bg-zinc-800 rounded-lg flex items-center justify-center">
+              <Users className="h-6 w-6 text-zinc-900 dark:text-white" />
             </div>
             <div>
-              <h3 className="font-semibold text-lg">Users</h3>
-              <p className="text-sm text-gray-600">Manage accounts</p>
+              <h3 className="font-semibold text-lg text-zinc-900 dark:text-white">Users</h3>
+              <p className="text-sm text-zinc-600 dark:text-zinc-400">Manage accounts</p>
             </div>
           </div>
         </Link>
       </div>
 
       <div className="flex items-center justify-between mb-8">
-        <h2 className="text-2xl font-bold">Product Management</h2>
+        <h2 className="text-2xl font-bold text-zinc-900 dark:text-white">Product Management</h2>
         <Link
           to="/admin/product/new"
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-colors"
+          className="flex items-center gap-2 bg-zinc-900 dark:bg-white text-white dark:text-zinc-900 px-4 py-2 rounded-lg transition-colors"
         >
           <Plus className="h-5 w-5" />
           Add New Product
