@@ -84,4 +84,17 @@ public class OrderService implements IOrderService {
     public List<Order> findByUserEmail(String email) {
         return orderRepository.findByUserEmail(email);
     }
+
+    /**
+     * Get all orders for a specific user by their user ID.
+     * This method is used for user-specific order retrieval via JWT authentication.
+     *
+     * @param userId The ID of the logged-in user (extracted from JWT)
+     * @return List of orders belonging to the specified user
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Order> findByUserId(Integer userId) {
+        return orderRepository.findByUserId(userId);
+    }
 }
