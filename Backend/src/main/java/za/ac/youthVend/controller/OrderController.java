@@ -3,6 +3,8 @@ package za.ac.youthVend.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import za.ac.youthVend.domain.Address;
 import za.ac.youthVend.domain.Order;
@@ -20,7 +22,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/orders")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
 public class OrderController {
 
     private final OrderService orderService;
@@ -157,5 +158,32 @@ public class OrderController {
                 "totalAmount", order.getTotalAmount(),
                 "orderStatus", order.getStatus()
         ));
+    }
+
+    /**
+     * Get all orders for the currently authenticated user.
+     * The user is identified via JWT token from the Authorization header.
+     * Users can only see their own orders - no userId or email needs to be passed.
+     *
+     * @return List of orders belonging to the logged-in user
+     */
+    @GetMapping("/my-orders")
+    public ResponseEntity<List<Order>> getMyOrders(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated() || 
+            !(authentication.getPrincipal() instanceof UserDetails userDetails)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        String email = userDetails.getUsername();
+        
+        // Look up the user by email from the database to get their userId
+        Optional<User> userOpt = userService.getUserByEmail(email);
+        if (userOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(List.of());
+        }
+
+        Integer userId = userOpt.get().getUserId();
+        List<Order> orders = orderService.findByUserId(userId);
+        return ResponseEntity.ok(orders);
     }
 }
