@@ -21,7 +21,6 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/products")
 @RequiredArgsConstructor
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
 public class ProductController {
 
     private final ProductService productService;
@@ -53,6 +52,21 @@ public class ProductController {
     @GetMapping("/category/{categoryId}")
     public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Integer categoryId) {
         List<Product> products = productService.findByCategoryId(categoryId);
+        return ResponseEntity.ok(products);
+    }
+
+    /**
+     * Search products by name (case-insensitive partial match)
+     * Query parameter: q (search query)
+     */
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> searchProducts(@RequestParam(value = "q", required = false) String query) {
+        if (query == null || query.trim().isEmpty()) {
+            // If no query provided, return all products
+            List<Product> products = productService.findAll();
+            return ResponseEntity.ok(products);
+        }
+        List<Product> products = productService.findByName(query.trim());
         return ResponseEntity.ok(products);
     }
 
