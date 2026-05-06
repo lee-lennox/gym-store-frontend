@@ -9,7 +9,6 @@ import za.ac.youthVend.service.UserService;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
 public class UserController {
 
     private final UserService userService;
