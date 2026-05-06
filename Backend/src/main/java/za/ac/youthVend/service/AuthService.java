@@ -54,6 +54,14 @@ public class AuthService {
         // Generate JWT token
         String token = jwtUtil.generateToken(savedUser.getEmail(), savedUser.getRole().name());
 
+        // Send welcome email (async - non-blocking)
+        try {
+            emailService.sendWelcomeEmail(savedUser.getEmail(), savedUser.getUsername());
+        } catch (Exception e) {
+            // Log error but don't fail registration
+            System.err.println("Failed to send welcome email to " + savedUser.getEmail() + ": " + e.getMessage());
+        }
+
         return AuthResponse.builder()
                 .token(token)
                 .email(savedUser.getEmail())
