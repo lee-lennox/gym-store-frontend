@@ -10,7 +10,6 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/buyer")
-@CrossOrigin(origins = {"http://localhost:5173", "http://localhost:3000"})
 @PreAuthorize("hasAnyAuthority('BUYER', 'ADMIN')")
 public class BuyerController {
 
