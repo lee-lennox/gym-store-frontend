@@ -84,7 +84,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.PUT, "/categories/**").hasAuthority("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/categories/**").hasAuthority("ADMIN")
 
-                        // TEMPORARY: Orders public for testing - CHANGE THIS BACK TO authenticated() later
+                        // Orders - my-orders requires authentication, others are public for testing
+                        // TODO: Make all order endpoints require authentication in production
+                        .requestMatchers(HttpMethod.GET, "/orders/my-orders").authenticated()
                         .requestMatchers("/orders/**").permitAll()
                         .requestMatchers("/order-items/**").permitAll()
                         .requestMatchers("/payments/**").permitAll()
