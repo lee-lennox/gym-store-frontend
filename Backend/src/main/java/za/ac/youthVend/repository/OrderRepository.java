@@ -19,4 +19,11 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
     @Query("SELECT o FROM Order o WHERE o.user.email = :email")
     List<Order> findByUserEmail(@Param("email") String email);
+
+    /**
+     * Find all orders for a specific user by their user ID.
+     * Used for user-specific order retrieval via JWT authentication.
+     */
+    @Query("SELECT o FROM Order o WHERE o.user.userId = :userId")
+    List<Order> findByUserId(@Param("userId") Integer userId);
 }
