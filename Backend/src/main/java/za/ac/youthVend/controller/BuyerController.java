@@ -9,7 +9,7 @@ import za.ac.youthVend.service.UserService;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/buyer")
+@RequestMapping("/api/buyer")
 @PreAuthorize("hasAnyAuthority('BUYER', 'ADMIN')")
 public class BuyerController {
 

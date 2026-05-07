@@ -27,7 +27,7 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Value("${FRONTEND_URL}")
+    @Value("${FRONTEND_URL:http://localhost:5173,http://localhost:3000,http://127.0.0.1:5173,http://127.0.0.1:3000}")
     private String frontendUrl;
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -58,50 +58,54 @@ public class SecurityConfig {
 
                         // Public endpoints
                         .requestMatchers(
-                                "/users/register",
-                                "/users/login",
-                                "/users/forgot-password",
-                                "/users/reset-password",
-                                "/auth/**"
+                                "/api/users/register",
+                                "/api/users/login",
+                                "/api/users/forgot-password",
+                                "/api/users/reset-password",
+                                "/api/auth/**"
                         ).permitAll()
 
-                        .requestMatchers(HttpMethod.GET, "/users/exists").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/users/exists").permitAll()
 
                         // PUBLIC: Product images (must be before other product rules)
-                        .requestMatchers("/products/images/**").permitAll()
+                        .requestMatchers("/api/products/images/**").permitAll()
 
                         // PUBLIC: View products and categories (GET only)
-                        .requestMatchers(HttpMethod.GET, "/products/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
-                        .requestMatchers(HttpMethod.PATCH, "/products/*/decrease-stock").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/categories/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH, "/api/products/*/decrease-stock").permitAll()
                         
                         // ADMIN ONLY: Create/Update/Delete products and categories
-                        .requestMatchers(HttpMethod.POST, "/products/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/products/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.PATCH, "/products/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/products/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.POST, "/categories/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.PUT, "/categories/**").hasAuthority("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/categories/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/products/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/products/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PATCH, "/api/products/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/products/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/categories/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/api/categories/**").hasAuthority("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/categories/**").hasAuthority("ADMIN")
 
-                        // Orders - my-orders requires authentication, others are public for testing
-                        // TODO: Make all order endpoints require authentication in production
-                        .requestMatchers(HttpMethod.GET, "/orders/my-orders").authenticated()
-                        .requestMatchers("/orders/**").permitAll()
-                        .requestMatchers("/order-items/**").permitAll()
-                        .requestMatchers("/payments/**").permitAll()
+                        // Orders - authenticated users only
+                        .requestMatchers("/api/orders/**").authenticated()
+                        .requestMatchers("/api/order-items/**").authenticated()
+                        .requestMatchers("/api/payments/**").authenticated()
 
                         // Cart endpoints - authenticated users
-                        .requestMatchers("/cart/**").authenticated()
+                        .requestMatchers("/api/cart/**").authenticated()
 
                         // Authenticated user endpoints
-                        .requestMatchers(HttpMethod.GET, "/users/**").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/api/users/**").authenticated()
+
+                        // Addresses - authenticated users
+                        .requestMatchers("/api/addresses/**").authenticated()
 
                         // Admin-only endpoints
-                        .requestMatchers("/admin/**", "/dashboard/**").hasAuthority("ADMIN")
+                        .requestMatchers("/api/admin/**", "/api/dashboard/**").hasAuthority("ADMIN")
 
                         // Buyer-specific endpoints
-                        .requestMatchers("/buyer/**").hasAnyAuthority("BUYER", "ADMIN")
+                        .requestMatchers("/api/buyer/**").hasAnyAuthority("BUYER", "ADMIN")
+
+                        // Product images API - authenticated users
+                        .requestMatchers("/api/product-images/**").authenticated()
 
                         // Any other request requires authentication
                         .anyRequest().authenticated()

@@ -29,7 +29,7 @@ public class FileStorageService {
     private static final float JPEG_QUALITY = 0.85f;
 
     public FileStorageService(
-            @Value("${file.upload-dir}") String uploadDir) {
+            @Value("${file.upload-dir:uploads/products}") String uploadDir) {
         this.fileStorageLocation = Paths.get(uploadDir)
                 .toAbsolutePath()
                 .normalize();
