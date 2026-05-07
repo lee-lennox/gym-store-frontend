@@ -5,7 +5,7 @@ const DEV_LOCAL_BASE = 'http://localhost:8080/api';
 const FALLBACK_BASE = 'https://gymstore-5ni9.onrender.com/api';
 
 // Normalize API base URL from env (defensive: handles missing protocol, ":8080" values, and adds /api when appropriate)
-const rawApiUrl = process.env.REACT_APP_API_URL || process.env.VITE_API_URL || '';
+const rawApiUrl = process.env.REACT_APP_API_URL || process.env.VITE_API_URL || FALLBACK_BASE;
 
 function normalizeApiBase(url) {
   if (!url) return FALLBACK_BASE;
